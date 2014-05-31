@@ -21,6 +21,7 @@ client.on('connectFailed', function(error) {
         this.name = name;
         this.location = location;
     }
+    
     Client.prototype.toString = function clientToString() 
     {
         var ret = "Client with ID: "+this.id+" and name "+this.name+" is at x="+this.location.x+", y="+this.location.y+", z="+this.location.z;

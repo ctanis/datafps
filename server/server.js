@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+var fs = require('fs');
+var file = __dirname + '/test.json';
 
 var server = http.createServer(function(request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
@@ -24,6 +26,24 @@ wsServer = new WebSocketServer({
 function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
   return true;
+}
+
+//--------------------------------
+//  Load Data
+//--------------------------------
+var file = __dirname + '/test.json';
+function loadData()
+{
+    fs.readFile(file, 'utf8', function (err, data) 
+    {
+        if (err) 
+        {
+            console.log('Error: ' + err);
+            return;
+        }     
+        data = JSON.parse(data);
+        console.dir(data);
+    });
 }
 
 wsServer.on('request', function(request) {
@@ -55,3 +75,4 @@ wsServer.on('request', function(request) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
 });
+loadData();

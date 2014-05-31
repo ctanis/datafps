@@ -7,28 +7,56 @@ client.on('connectFailed', function(error) {
     console.log('Connect Error: ' + error.toString());
 });
 
-client.on('connect', function(connection) {
+
+    function Vertex(x,y,z) 
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    var myLocation = new Vertex(5,10,5);
+
+
+
+client.on('connect', function(connection) 
+{
+
+
     console.log('WebSocket client connected');
-    connection.on('error', function(error) {
+
+    connection.on('error', function(error) 
+    {
         console.log("Connection Error: " + error.toString());
     });
-    connection.on('close', function() {
+
+    connection.on('close', function() 
+    {
         console.log('echo-protocol Connection Closed');
     });
-    connection.on('message', function(message) {
-        if (message.type === 'utf8') {
+
+    connection.on('message', function(message) 
+    {
+        if (message.type === 'utf8') 
+        {
             console.log("Received: '" + message.utf8Data + "'");
         }
     });
 
-    function sendNumber() {
-        if (connection.connected) {
-            var number = Math.round(Math.random() * 0xFFFFFF);
-            connection.sendUTF(number.toString());
-            setTimeout(sendNumber, 1000);
+
+    function sendPostion()
+    {
+        if(connection.connected)
+        {
+            //Example: Update Postion
+            myLocation.y=myLocation.y+5;
+            myLocation.x=myLocation.x+2;
+            myLocation.z=myLocation.z+3;
+            connection.sendUTF(JSON.stringify(myLocation));
+            setTimeout(sendPostion, 1000);
         }
     }
-    sendNumber();
+    sendPostion();
 });
 
 client.connect('ws://localhost:8080/', 'echo-protocol');

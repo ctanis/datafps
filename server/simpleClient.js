@@ -15,8 +15,17 @@ client.on('connectFailed', function(error) {
         this.z = z;
     }
 
-    var myLocation = new Vertex(5,10,5);
+    function Client(id, name, location)
+    {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+    }
 
+    var clientID =0;
+    var name = "YoMomma";
+    var myLocation = new Vertex(5,10,5);
+    var tempClient = new Client(clientID, name, myLocation);
 
 
 client.on('connect', function(connection) 
@@ -49,9 +58,9 @@ client.on('connect', function(connection)
         if(connection.connected)
         {
             //Example: Update Postion
-            myLocation.y=myLocation.y+5;
-            myLocation.x=myLocation.x+2;
-            myLocation.z=myLocation.z+3;
+            tempClient.location.y=myLocation.y+5;
+            tempClient.location.x=myLocation.x+2;
+            tempClient.location.z=myLocation.z+3;
             connection.sendUTF(JSON.stringify(myLocation));
             setTimeout(sendPostion, 1000);
         }

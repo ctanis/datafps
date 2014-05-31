@@ -21,6 +21,11 @@ client.on('connectFailed', function(error) {
         this.name = name;
         this.location = location;
     }
+    Client.prototype.toString = function clientToString() 
+    {
+        var ret = "Client with ID: "+this.id+" and name "+this.name+" is at x="+this.location.x+", y="+this.location.y+", z="+this.location.z;
+        return ret;
+    }
 
     var clientID =0;
     var name = "YoMomma";
@@ -53,7 +58,7 @@ client.on('connect', function(connection)
     });
 
 
-    function sendPostion()
+    function sendClient()
     {
         if(connection.connected)
         {
@@ -61,11 +66,11 @@ client.on('connect', function(connection)
             tempClient.location.y=myLocation.y+5;
             tempClient.location.x=myLocation.x+2;
             tempClient.location.z=myLocation.z+3;
-            connection.sendUTF(JSON.stringify(myLocation));
-            setTimeout(sendPostion, 1000);
+            connection.sendUTF(JSON.stringify(tempClient));
+            setTimeout(sendClient, 1000);
         }
     }
-    sendPostion();
+    sendClient();
 });
 
-client.connect('ws://localhost:8080/', 'echo-protocol');
+client.connect('http://epsilon.2014.hackanooga.com:8080', 'echo-protocol');

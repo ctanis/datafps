@@ -38,9 +38,14 @@ wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection accepted.');
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
-            console.log('Received Message: ' + message.utf8Data);
-            connection.sendUTF(message.utf8Data);
+            var object = JSON.parse(message.utf8Data);
+            console.log('Received Message');
+            console.log('   Name: '+object.name);
+            console.log('   ID: '+object.id);
+            console.log('   Location: '+object.location.x+","+object.location.y+","+object.location.z);
+            //connection.sendUTF(message.utf8Data);
         }
+
         else if (message.type === 'binary') {
             console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
             connection.sendBytes(message.binaryData);

@@ -32,6 +32,7 @@ function originIsAllowed(origin) {
 //  Load Data
 //--------------------------------
 var file = __dirname + '/test.json';
+var initialData;
 function loadData()
 {
     fs.readFile(file, 'utf8', function (err, data) 
@@ -41,10 +42,49 @@ function loadData()
             console.log('Error: ' + err);
             return;
         }     
-        data = JSON.parse(data);
-        console.dir(data);
+        initialData = JSON.parse(data);
     });
 }
+
+function Vertex(x,y,z) 
+{
+    this.x = x;
+    this.y = y;
+    this.z = z;
+}
+function Triangle(v1,v2,v3)
+{
+    this.v1 =v1;
+    this.v2 = v2;
+    this.v3 = v3;
+}
+
+v0 = new Vertex(0,0,0);
+v1 = new Vertex(0,1,0);
+v2 = new Vertex(1,1,0);
+v3= new Vertex(1,0,0);
+
+vertices = [];
+vertices.push(v0);
+vertices.push(v1);
+vertices.push(v2);
+vertices.push(v3);
+
+connectivity = [];
+connectivity.push(0,2,1);
+connectivity.push(0,3,2);
+
+function Packet(format, vertices, connectivity)
+{
+    this.format = format;
+    this.vertices=vertices;
+    this.connectivity = connectivity;
+}
+
+//t1 = new Triangle(v1, v3, v2);
+//t2 = new Triangle(v1, v4, v3);
+
+
 
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
@@ -63,7 +103,9 @@ wsServer.on('request', function(request) {
             console.log('   Name: '+object.name);
             console.log('   ID: '+object.id);
             console.log('   Location: '+object.location.x+","+object.location.y+","+object.location.z);
-            //connection.sendUTF(message.utf8Data);
+            connection.sendUTF(message.utf8Data);
+            packet = new Packet('mesh',vertices,connectivity);
+            connection.sendUTF(JSON.stringify(packet));
         }
 
         else if (message.type === 'binary') {

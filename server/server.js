@@ -71,8 +71,10 @@ vertices.push(v2);
 vertices.push(v3);
 
 connectivity = [];
-connectivity.push(0,2,1);
-connectivity.push(0,3,2);
+t1 = [0,2,1];
+t2 = [0,3,2];
+connectivity.push(t1);
+connectivity.push(t2);
 
 function Packet(format, vertices, connectivity)
 {

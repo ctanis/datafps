@@ -71,16 +71,11 @@ vertices = [];
 //vertices.push([1,0,0]);
 
 vertices.push([0,0,0]);
-<<<<<<< HEAD
-vertices.push([0,100,0]);
-vertices.push([1,1,0]);
-=======
->>>>>>> 26ab7dd8331d0fcd73aa903572a726d41016ea8d
 vertices.push([1,0,0]);
-vertices.push([1,1,0]);
-vertices.push([0,1,0]);
-vertices.push([0,0,1]);
 vertices.push([1,0,1]);
+vertices.push([0,0,1]);
+vertices.push([0,1,0]);
+vertices.push([1,1,0]);
 vertices.push([1,1,1]);
 vertices.push([0,1,1]);
 
@@ -97,8 +92,23 @@ t7 = [0,3,2];
 t8 = [0,2,1];
 t9 = [4,7,3];
 t10 = [4,3,0];
+t11 = [5,2,6];
+t12 = [5,1,2];
 connectivity.push(t1);
 connectivity.push(t2);
+connectivity.push(t3);
+connectivity.push(t4);
+connectivity.push(t5);
+connectivity.push(t6);
+connectivity.push(t7);
+connectivity.push(t8);
+connectivity.push(t9);
+connectivity.push(t10);
+connectivity.push(t11);
+connectivity.push(t12);
+
+
+
 
 packet = new Packet('mesh',vertices,connectivity);
 function Packet(format, vertices, connectivity)

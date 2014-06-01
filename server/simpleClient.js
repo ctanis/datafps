@@ -52,7 +52,7 @@ client.on('connectFailed', function(error) {
     var clientID =0;
     var name = "YoMomma";
     var myLocation = new Vertex(5,10,5);
-    var thisClient = new Client('', name, myLocation);
+    var thisClient = new Client('', name, [5,11,5]);
 
     var vertices = [];
     var connectivities = [];
@@ -124,4 +124,4 @@ client.on('connect', function(connection)
     sendClient();
 });
 
-client.connect('http://epsilon.2014.hackanooga.com:8080', 'echo-protocol');
+client.connect('http://epsilon.2014.hackanooga.com:8080', null);

@@ -94,12 +94,24 @@ DataFPS = function() {
 
 	// var groundGeo = new THREE.PlaneGeometry( 10000, 10000 );
         var groundGeo = new THREE.PlaneGeometry( 6769, 4809 );
+
+        // var groundGeo = new THREE.Geometry();
+        // groundGeo.vertices = [];
+        // groundGeo.vertices.push(new THREE.Vector3(0,0,0));
+        // groundGeo.vertices.push(new THREE.Vector3(6769,0,0));
+        // groundGeo.vertices.push(new THREE.Vector3(6769,0,4809));
+        // groundGeo.vertices.push(new THREE.Vector3(0,0,4809));
+        // groundGeo.faces=[];
+        // groundGeo.faces.push(new THREE.Face4(0,1,2,3));
+
 	var groundMat = new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: 0xffffff, specular: 0x152535, map: groundmap } );
 	groundMat.color.setHSL( 0.095, 1, 0.75 );
 
 	var ground = new THREE.Mesh( groundGeo, groundMat );
 	ground.rotation.x = -Math.PI/2;
-	ground.position.y = -6;
+	ground.position.y = 0;
+        ground.position.x = 3384.5;
+        ground.position.z = 2404.5;
 	scene.add( ground );
 	ground.receiveShadow = true;
 
@@ -127,7 +139,7 @@ DataFPS = function() {
 
         this.ws.onmessage = function(message) {
             
-            console.log("got a message");
+            // console.log("got a message");
             // console.log("msg: " + message);
 
             // console.log(message);
@@ -228,7 +240,7 @@ DataFPS = function() {
             // camera.lookAt(new THREE.Vector3(0,0,0));
             // dirLight.position.set(camera.position);
             
-            console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
+//            console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
 
             controls.update( clock.getDelta() );
             renderer.render(scene, camera);

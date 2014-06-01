@@ -1,0 +1,12 @@
+top left:
+35.059071
+-85.333128
+
+bottom right:
+35.009647
+-85.250645
+
+pixels: 
+width: 6769
+height: 4809
+

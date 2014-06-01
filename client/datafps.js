@@ -1,3 +1,5 @@
+var ws;
+
 DataFPS = function() {
 
     var renderer;
@@ -7,7 +9,7 @@ DataFPS = function() {
     var width;
     var height;
     var wsurl;
-    var ws;
+    //var ws;
     var controls;
     var clock;
     var dirLight;
@@ -19,7 +21,7 @@ DataFPS = function() {
         this.props = props;
         this.wsurl = socketURL;
 
-        this.ws = new WebSocket("ws://" + socketURL + "/stream");
+        ws = new WebSocket("ws://" + socketURL + "/stream");
         
         // graphics setup
         renderer = new THREE.WebGLRenderer(props);
@@ -47,8 +49,9 @@ DataFPS = function() {
         // controls.movementSpeed = 125;
         // controls.lookSpeed=0.05;
 
+        controls.heightMin=5;
         controls.movementSpeed = 1250;
-        controls.lookSpeed=0.2;
+        controls.lookSpeed=0.1;
 
         controls.lookVertical=true;
         controls.lon=-90;
@@ -146,29 +149,36 @@ DataFPS = function() {
 
 
         // data points as circles
-        this.ws.onmessage=function(message) {
+        ws.onmessage=function(message) {
             console.log("got a message");
             glob = message;
             //console.log(message.data);
             var array = jQuery.parseJSON(message.data);
             console.log("parsed...");
+            glob = array;
 
             // console.log(pt);
             console.log(array.length);
 
-            for (var pt in array)
+            for (var i=0; i<array.length; i++)
             {
-                console.log("drawing a point");
-                var sphere = new THREE.SphereGeometry(10, 5, 5);
-                sphere.position.x=pt.px;
-                sphere.position.z=pt.py;
-                sphere.position.y=2;
+                var pt = array[i];
+                // console.log("drawing a point at " + pt.px + " " + pt.py);
+                var sphere = new THREE.BoxGeometry(15, 35, 15);
 
                 var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side:THREE.DoubleSide, shininess: 20, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
 
                 var smesh =new THREE.Mesh(sphere, material);
+                smesh.position.x=pt.px;
+                smesh.position.z=pt.py;
+                smesh.position.y=0;
+                // smesh.position.x=0;
+                // smesh.position.y=10;
+                // smesh.position.z=0;
+
                 smesh.castShadow=true;
                 smesh.receiveShadow=true;
+                // smesh.computeMorphNormals();
                 scene.add(smesh);
             }
         }

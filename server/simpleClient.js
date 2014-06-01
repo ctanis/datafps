@@ -15,6 +15,26 @@ client.on('connectFailed', function(error) {
         this.z = z;
     }
 
+    function MeshRequest(id)
+    {
+        this.clientID = id;
+        this.format = 'mesh'
+        this.location = [5,10,5];
+    }
+
+    function IDRequest()
+    {
+        this.format = 'id'
+        this.location = [5,10,5];
+    }
+
+    function DeltaRequest(id)
+    {
+        this.clientID = id;
+        this.format = 'delta';
+        this.location = [5,10,5];
+    }
+
     function Client(id, name, location)
     {
         this.id = id;
@@ -32,12 +52,16 @@ client.on('connectFailed', function(error) {
     var clientID =0;
     var name = "YoMomma";
     var myLocation = new Vertex(5,10,5);
-    var tempClient = new Client(clientID, name, myLocation);
+    var thisClient = new Client('', name, myLocation);
 
+    var vertices = [];
+    var connectivities = [];
 
 client.on('connect', function(connection) 
 {
 
+    //Register this client with the server.
+    connection.sendUTF(JSON.stringify(new IDRequest()));
 
     console.log('WebSocket client connected');
 
@@ -55,10 +79,34 @@ client.on('connect', function(connection)
     {
         if (message.type === 'utf8') 
         {
+            message = JSON.parse(message.utf8Data);
+
+            if(message.format === 'id')
+            {
+                //Set this client's newly found identity
+                thisClient.id = message.clientID;
+                //Ask for a mesh, now that we know how we are.
+                var req = MeshRequest(thisClient.id);
+                connection.sendUTF(JSON.stringify(req));
+            }
+            else if(message.format === 'delta')
+            {
+                var req = new DeltaRequest();
+            }
+            else if(message.format === 'mesh')
+            {
+                console.log('Got a mesh...');
+                vertices.push(message.vertices);
+                connectivities.push(message.connectivities)
+                //Now that we have the full mesh, just ask for deltas
+                var req = new DeltaRequest(thisClient.id);
+                connection.sendUTF(JSON.stringify(req));
+
+            }
+
             console.log("Received: '" + message.utf8Data + "'");
         }
     });
-
 
     function sendClient()
     {
@@ -68,6 +116,7 @@ client.on('connect', function(connection)
             tempClient.location.y=myLocation.y+5;
             tempClient.location.x=myLocation.x+2;
             tempClient.location.z=myLocation.z+3;
+
             connection.sendUTF(JSON.stringify(tempClient));
             setTimeout(sendClient, 1000);
         }

@@ -4,12 +4,48 @@
   <!-- <script src="libs/jquery.websocket-0.0.1.js"></script> -->
   <script src="libs/three.min.js"></script>
   <script src="libs/OrbitControls.js"></script>
+  <script src="libs/FirstPersonControls.js"></script>
   <script src="libs/transform.js"></script>
   <script src="datafps.js"></script>
 
   <style>
   #noWebGL { font-size: 30px; width: 50%; display: none; }
   </style>
+
+  <script type="x-shader/x-vertex" id="vertexShader">
+    
+    varying vec3 vWorldPosition;
+
+    void main() {
+
+    vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+    vWorldPosition = worldPosition.xyz;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+    }
+
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentShader">
+
+    uniform vec3 topColor;
+    uniform vec3 bottomColor;
+    uniform float offset;
+    uniform float exponent;
+
+    varying vec3 vWorldPosition;
+
+    void main() {
+
+    float h = normalize( vWorldPosition + offset ).y;
+    gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( h, exponent ), 0.0 ) ), 1.0 );
+
+    }
+
+  </script>
+
+
 
 </head>
 
@@ -21,7 +57,7 @@
 </div>
 
 <!-- <canvas id="world" style="width: 640px; height: 480px; border: solid 1px"></canvas> -->
-<canvas id="world" style="width: 1000px; height: 750px; border: solid 1px"></canvas>
+<canvas id="world" width="800" height="600" style="border: solid 1px"></canvas>
 
 </body>
 </html>

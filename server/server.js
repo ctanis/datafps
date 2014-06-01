@@ -60,19 +60,43 @@ function Triangle(v1,v2,v3)
 }
 
 v0 = new Vertex(0,0,0);
-v1 = new Vertex(0,1,0);
+v1 = new Vertex(0,2,0);
 v2 = new Vertex(1,1,0);
 v3= new Vertex(1,0,0);
 
 vertices = [];
+///vertices.push([0,0,0]);
+//vertices.push([0,1,0]);
+//vertices.push([1,1,0]);
+//vertices.push([1,0,0]);
+
 vertices.push([0,0,0]);
+<<<<<<< HEAD
 vertices.push([0,100,0]);
 vertices.push([1,1,0]);
+=======
+>>>>>>> 26ab7dd8331d0fcd73aa903572a726d41016ea8d
 vertices.push([1,0,0]);
+vertices.push([1,1,0]);
+vertices.push([0,1,0]);
+vertices.push([0,0,1]);
+vertices.push([1,0,1]);
+vertices.push([1,1,1]);
+vertices.push([0,1,1]);
 
 connectivity = [];
-t1 = [0,2,1];
-t2 = [0,3,2];
+//t1 = [0,2,1];
+//t2 = [0,3,2];
+t1 = [0,1,5];
+t2 = [0,5,4];
+t3 = [4,5,6];
+t4 = [4,6,7];
+t5 = [7,6,2];
+t6 = [7,2,5];
+t7 = [0,3,2];
+t8 = [0,2,1];
+t9 = [4,7,3];
+t10 = [4,3,0];
 connectivity.push(t1);
 connectivity.push(t2);
 

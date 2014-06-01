@@ -96,8 +96,12 @@ wsServer.on('request', function(request) {
       return;
     }
 
+    connection.sendUTF(JSON.stringify(packet));
     var connection = request.accept(null, request.origin);
+    connection.sendUTF(JSON.stringify(packet));
+    console.log('sending:'+packet);
     console.log((new Date()) + ' Connection accepted.');
+
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
             var object = JSON.parse(message.utf8Data);

@@ -66,7 +66,7 @@ v3= new Vertex(1,0,0);
 
 vertices = [];
 vertices.push([0,0,0]);
-vertices.push([0,1,0]);
+vertices.push([0,100,0]);
 vertices.push([1,1,0]);
 vertices.push([1,0,0]);
 

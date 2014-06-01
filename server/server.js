@@ -60,7 +60,7 @@ function Triangle(v1,v2,v3)
 }
 
 v0 = new Vertex(0,0,0);
-v1 = new Vertex(0,1,0);
+v1 = new Vertex(0,2,0);
 v2 = new Vertex(1,1,0);
 v3= new Vertex(1,0,0);
 

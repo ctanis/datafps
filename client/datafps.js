@@ -30,21 +30,26 @@ DataFPS = function() {
 
 
         scene = new THREE.Scene();
-	scene.fog = new THREE.Fog( 0xffffff, 1, 5000 );
+	scene.fog = new THREE.Fog( 0xffffff, 3000, 5000 );
 	scene.fog.color.setHSL( 0.6, 0, 1 );
 	renderer.setClearColor( scene.fog.color, 1 );
 
         camera = new THREE.PerspectiveCamera(45, this.width/this.height, 0.1, 10000);
         //camera.position.set(10, 20, -10);
-        camera.position.set(12, 18, 90);
+        //camera.position.set(12, 18, 90);
+        camera.position.set(3384.5, 3000, 2404.5);
         scene.add(camera);
 
         // set up controls
         //controls2 = new THREE.OrbitControls(camera);
         controls = new THREE.FirstPersonControls(camera);
 
-        controls.movementSpeed = 25;
-        controls.lookSpeed=0.05;
+        // controls.movementSpeed = 125;
+        // controls.lookSpeed=0.05;
+
+        controls.movementSpeed = 1250;
+        controls.lookSpeed=0.2;
+
         controls.lookVertical=true;
         controls.lon=-90;
 
@@ -131,79 +136,111 @@ DataFPS = function() {
 	scene.fog.color.copy( uniforms.bottomColor.value );
 
 	var skyGeo = new THREE.SphereGeometry( 4000, 32, 15 );
+        //var skyGeo = new THREE.SphereGeometry( 18000, 32, 15 );
 	var skyMat = new THREE.ShaderMaterial( { vertexShader: vertexShader, fragmentShader: fragmentShader, uniforms: uniforms, side: THREE.BackSide } );
 
 	var sky = new THREE.Mesh( skyGeo, skyMat );
+        sky.position.x = 3384.5;
+        sky.position.z = 2404.5;
 	scene.add( sky );
 
 
-        this.ws.onmessage = function(message) {
-            
-            // console.log("got a message");
-            // console.log("msg: " + message);
+        // data points as circles
+        this.ws.onmessage=function(message) {
+            console.log("got a message");
+            glob = message;
+            //console.log(message.data);
+            var array = jQuery.parseJSON(message.data);
+            console.log("parsed...");
 
-            // console.log(message);
-            var foo = jQuery.parseJSON(message.data);
-            // console.log(foo);
-            // console.log("goodbye");
+            // console.log(pt);
+            console.log(array.length);
 
-            var model = new THREE.Geometry();
-            // model.vertices = foo.vertices;
-            model.vertices = [];
-            model.faces = [];
+            for (var pt in array)
+            {
+                console.log("drawing a point");
+                var sphere = new THREE.SphereGeometry(10, 5, 5);
+                sphere.position.x=pt.px;
+                sphere.position.z=pt.py;
+                sphere.position.y=2;
 
-            for (var v=0; v<foo.vertices.length; v++) {
-                var a = new THREE.Vector3(foo.vertices[v][0],
-                                          foo.vertices[v][1],
-                                          foo.vertices[v][2]);
-                // console.log(a);
-                model.vertices.push(a);
+                var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side:THREE.DoubleSide, shininess: 20, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
+
+                var smesh =new THREE.Mesh(sphere, material);
+                smesh.castShadow=true;
+                smesh.receiveShadow=true;
+                scene.add(smesh);
             }
-
-            for (var v=0; v<foo.connectivity.length; v++) {
-                // console.log("blah");
-                // console.log("hi "  + foo.connectivity[v]);
-                // console.log(foo.connectivity[v]);
-
-                var b = new THREE.Face3(foo.connectivity[v][0],
-                                        foo.connectivity[v][1],
-                                        foo.connectivity[v][2]);
-
-                model.faces.push(b);
-            }
-            
-            
-            // model.faces = foo.connectivity;
-            
-
-            // tmp
-	    // var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 20, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
-
-            //var material = new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: 0xffffff, specular: 0x050505 } );
-	// groundMat.color.setHSL( 0.095, 1, 0.75 );
-
-
-            var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side:THREE.DoubleSide, shininess: 20, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
-            // var texture = THREE.ImageUtils.loadTexture( "textures/disturb.jpg" );
-// 	    texture.repeat.set( 2, 2 );
-// 	    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-// 	    texture.format = THREE.RGBFormat;
-// 
-            // var material = new THREE.MeshPhongMaterial( { color: 0xff0000, ambient: 0x444444 } );
-
-            // var model = new THREE.BoxGeometry(1, 1, 1, 5, 5, 5);
-
-            // var mesh = THREE.SceneUtils.createMultiMaterialObject( model, [
-            //     new THREE.MeshNormalMaterial( { color: 0xffffff} ),
-            //     new THREE.MeshBasicMaterial( { color: 0x222222, wireframe: true})
-            // ]);
-            var mesh = new THREE.Mesh(model, material);
-            mesh.castShadow=true;
-            mesh.receiveShadow=true;
-            model.computeMorphNormals();
-
-            scene.add(mesh);
         }
+
+
+        // this.ws.onmessage = function(message) {
+            
+        //     // console.log("got a message");
+        //     // console.log("msg: " + message);
+
+        //     // console.log(message);
+        //     var foo = jQuery.parseJSON(message.data);
+        //     // console.log(foo);
+        //     // console.log("goodbye");
+
+        //     var model = new THREE.Geometry();
+        //     // model.vertices = foo.vertices;
+        //     model.vertices = [];
+        //     model.faces = [];
+
+        //     for (var v=0; v<foo.vertices.length; v++) {
+        //         var a = new THREE.Vector3(foo.vertices[v][0],
+        //                                   foo.vertices[v][1],
+        //                                   foo.vertices[v][2]);
+        //         // console.log(a);
+        //         model.vertices.push(a);
+        //     }
+
+        //     for (var v=0; v<foo.connectivity.length; v++) {
+        //         // console.log("blah");
+        //         // console.log("hi "  + foo.connectivity[v]);
+        //         // console.log(foo.connectivity[v]);
+
+        //         var b = new THREE.Face3(foo.connectivity[v][0],
+        //                                 foo.connectivity[v][1],
+        //                                 foo.connectivity[v][2]);
+
+        //         model.faces.push(b);
+        //     }
+            
+            
+        //     // model.faces = foo.connectivity;
+            
+
+        //     // tmp
+	//     // var material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 20, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
+
+        //     //var material = new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: 0xffffff, specular: 0x050505 } );
+	//     // groundMat.color.setHSL( 0.095, 1, 0.75 );
+
+
+        //     var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side:THREE.DoubleSide, shininess: 20, vertexColors: THREE.FaceColors, shading: THREE.FlatShading } );
+        //     // var texture = THREE.ImageUtils.loadTexture( "textures/disturb.jpg" );
+        //     // 	    texture.repeat.set( 2, 2 );
+        //     // 	    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        //     // 	    texture.format = THREE.RGBFormat;
+        //     // 
+        //     // var material = new THREE.MeshPhongMaterial( { color: 0xff0000, ambient: 0x444444 } );
+
+        //     // var model = new THREE.BoxGeometry(1, 1, 1, 5, 5, 5);
+
+        //     // var mesh = THREE.SceneUtils.createMultiMaterialObject( model, [
+        //     //     new THREE.MeshNormalMaterial( { color: 0xffffff} ),
+        //     //     new THREE.MeshBasicMaterial( { color: 0x222222, wireframe: true})
+        //     // ]);
+        //     var mesh = new THREE.Mesh(model, material);
+        //     mesh.castShadow=true;
+        //     mesh.receiveShadow=true;
+        //     model.computeMorphNormals();
+
+        //     scene.add(mesh);
+        // }
 
 
         
@@ -259,8 +296,8 @@ DataFPS = function() {
 window.onload = function() {
 
     dfps = new DataFPS();
-//    dfps.init( 1000, 750, "epsilon.2014.hackanooga.com:8080", { antialias: true, canvas: world });
-    dfps.init( 800, 600, "localhost:8080", { antialias: true, canvas: world });
+    dfps.init( 1000, 750, "epsilon.2014.hackanooga.com:8080", { antialias: true, canvas: world });
+//    dfps.init( 800, 600, "localhost:8080", { antialias: true, canvas: world });
 
     dfps.go();
 };

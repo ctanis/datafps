@@ -29,7 +29,7 @@ while (<>) {
 
   next if $px < 0 or $py < 0 or $px > 6769 or $py > 4809;
 
-  print "{date: $date, px: $px, py: $py, reason:\"$reason\"}\n";
+  print "{\"date\": $date, \"px\": $px, \"py\": $py, \"reason\":\"$reason\"},\n";
  
 }
 

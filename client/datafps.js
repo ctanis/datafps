@@ -28,15 +28,19 @@ DataFPS = function() {
         //                       }
         //                      );
 
-        this.ws = new WebSocket("ws://" + socketURL);
-        // this.ws.onmessage = function(message) {
-        //     console.log("got a message");
-        //     console.log("msg: " + message);
-        // }
+        this.ws = new WebSocket("ws://" + socketURL + "/stream");
 
-        function writeToScreen(message) { var pre = document.createElement("p"); pre.style.wordWrap = "break-word"; pre.innerHTML = message; output.appendChild(pre); }
-        
-        this.ws.onmessage = function(evt) { writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>'); websocket.close(); }
+        this.ws.onmessage = function(message) {
+            
+            console.log("got a message");
+            // console.log("msg: " + message);
+
+            console.log(message);
+            var foo = jQuery.parseJSON(message.data);
+            // console.log(foo.vertices.length);
+            // console.log("goodbye");
+
+        }
 
 
         renderer = new THREE.WebGLRenderer(props);
@@ -46,7 +50,6 @@ DataFPS = function() {
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, this.width/this.height, 0.1, 10000);
         camera.position.set(0, 0, 100);
-//        light = new THREE.AmbientLight(0x00FF00);
         light = new THREE.AmbientLight(0x000000);
 
         scene.add(camera);
@@ -96,7 +99,7 @@ DataFPS = function() {
 window.onload = function() {
 
     dfps = new DataFPS();
-    dfps.init( 1280, 960, "epsilon.2014.hackanooga.com:8080", { antialias: true, canvas: world });
+    dfps.init( 1000, 750, "epsilon.2014.hackanooga.com:8080", { antialias: true, canvas: world });
 
     dfps.go();
 };

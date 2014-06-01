@@ -72,7 +72,7 @@ DataFPS = function() {
             // tmp
             var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side:THREE.DoubleSide, wireframe: true } );
             // var model = new THREE.BoxGeometry(1, 1, 1, 5, 5, 5);
-            
+
             var mesh = THREE.SceneUtils.createMultiMaterialObject( model, [
                 new THREE.MeshNormalMaterial( { color: 0xffffff} ),
                 new THREE.MeshBasicMaterial( { color: 0x222222, wireframe: true})
@@ -88,8 +88,9 @@ DataFPS = function() {
 
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, this.width/this.height, 0.1, 10000);
-        camera.position.set(0, 0, 100);
-        light = new THREE.AmbientLight(0x000000);
+        camera.position.set(0, 0, -100);
+        // light = new THREE.AmbientLight(0x000000);
+        light = new THREE.PointLight(0x000000, 1, 100);
 
         scene.add(camera);
         scene.add(light);

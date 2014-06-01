@@ -76,6 +76,7 @@ t2 = [0,3,2];
 connectivity.push(t1);
 connectivity.push(t2);
 
+packet = new Packet('mesh',vertices,connectivity);
 function Packet(format, vertices, connectivity)
 {
     this.format = format;
@@ -96,7 +97,6 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    connection.sendUTF(JSON.stringify(packet));
     var connection = request.accept(null, request.origin);
     connection.sendUTF(JSON.stringify(packet));
     console.log('sending:'+packet);

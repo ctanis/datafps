@@ -40,7 +40,9 @@ DataFPS = function() {
         scene.add(camera);
 
         // set up controls
+        //controls2 = new THREE.OrbitControls(camera);
         controls = new THREE.FirstPersonControls(camera);
+
         controls.movementSpeed = 25;
         controls.lookSpeed=0.05;
         controls.lookVertical=true;
@@ -86,8 +88,13 @@ DataFPS = function() {
 
 
         // GROUND
-	var groundGeo = new THREE.PlaneGeometry( 10000, 10000 );
-	var groundMat = new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: 0xffffff, specular: 0x152535 } );
+        var groundmap = new THREE.ImageUtils.loadTexture('data/cha_streets.png');
+        
+
+
+	// var groundGeo = new THREE.PlaneGeometry( 10000, 10000 );
+        var groundGeo = new THREE.PlaneGeometry( 6769, 4809 );
+	var groundMat = new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: 0xffffff, specular: 0x152535, map: groundmap } );
 	groundMat.color.setHSL( 0.095, 1, 0.75 );
 
 	var ground = new THREE.Mesh( groundGeo, groundMat );
@@ -241,7 +248,7 @@ window.onload = function() {
 
     dfps = new DataFPS();
 //    dfps.init( 1000, 750, "epsilon.2014.hackanooga.com:8080", { antialias: true, canvas: world });
-    dfps.init( 1000, 750, "localhost:8080", { antialias: true, canvas: world });
+    dfps.init( 800, 600, "localhost:8080", { antialias: true, canvas: world });
 
     dfps.go();
 };

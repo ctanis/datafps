@@ -141,14 +141,14 @@ wsServer.on('request', function(request) {
     }
 
     var connection = request.accept(null, request.origin);
-    connection.sendUTF(JSON.stringify(packet));
+    //connection.sendUTF(JSON.stringify(packet));
     console.log('sending:'+packet);
     console.log((new Date()) + ' Connection accepted.');
 
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
 
-            //Parse json
+            //Parse json, figure out what kind of request it is.
             message = JSON.parse(message.utf8Data);
             //Message should have a format
             if(message.format === 'id')
@@ -162,7 +162,11 @@ wsServer.on('request', function(request) {
             }
             else if(message.format === 'delta')
             {
-                var packet = new Packet('delta')
+                var packet = new Packet('delta');
+                //Update connection.
+                clients[message.clientID].location=message.location;
+
+                connection.sendUTF(JSON.stringify(packet));
             }
             else if(message.format === 'mesh')
             {
@@ -185,3 +189,4 @@ wsServer.on('request', function(request) {
     });
 });
 loadData();
+

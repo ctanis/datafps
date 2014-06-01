@@ -59,6 +59,14 @@ function Triangle(v1,v2,v3)
     this.v3 = v3;
 }
 
+function Client(id, name, location)
+{
+    this.id = id;
+    this.name = name;
+    this.location = location;
+    this.receivedInitial = false;
+}
+
 v0 = new Vertex(0,0,0);
 v1 = new Vertex(0,2,0);
 v2 = new Vertex(1,1,0);
@@ -107,13 +115,14 @@ connectivity.push(t10);
 connectivity.push(t11);
 connectivity.push(t12);
 
-
+var clientCounter = 0;
 
 
 packet = new Packet('mesh',vertices,connectivity);
-function Packet(format, vertices, connectivity)
+function Packet(format, clientID, vertices, connectivity)
 {
     this.format = format;
+    this.clientID = clientID;
     this.vertices=vertices;
     this.connectivity = connectivity;
 }
@@ -121,7 +130,7 @@ function Packet(format, vertices, connectivity)
 //t1 = new Triangle(v1, v3, v2);
 //t2 = new Triangle(v1, v4, v3);
 
-
+clients = [];
 
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
@@ -132,20 +141,42 @@ wsServer.on('request', function(request) {
     }
 
     var connection = request.accept(null, request.origin);
-    connection.sendUTF(JSON.stringify(packet));
+    //connection.sendUTF(JSON.stringify(packet));
     console.log('sending:'+packet);
     console.log((new Date()) + ' Connection accepted.');
 
     connection.on('message', function(message) {
         if (message.type === 'utf8') {
-            var object = JSON.parse(message.utf8Data);
-            console.log('Received Message');
-            console.log('   Name: '+object.name);
-            console.log('   ID: '+object.id);
-            console.log('   Location: '+object.location.x+","+object.location.y+","+object.location.z);
-            connection.sendUTF(message.utf8Data);
-            packet = new Packet('mesh',vertices,connectivity);
-            connection.sendUTF(JSON.stringify(packet));
+
+            //Parse json, figure out what kind of request it is.
+            message = JSON.parse(message.utf8Data);
+            //Message should have a format
+            if(message.format === 'id')
+            {
+                clients.push(new Client(clientCounter, 'testClient', message.location));
+                var packet = new Packet('id',clientCounter,[],[]);
+                //Increment client counter... unique-ish
+                clientCounter++;
+                //Send response back with new ID packet
+                connection.sendUTF(JSON.stringify(packet));
+            }
+            else if(message.format === 'delta')
+            {
+                var packet = new Packet('delta');
+                //Update connection.
+                clients[message.clientID].location=message.location;
+
+                connection.sendUTF(JSON.stringify(packet));
+            }
+            else if(message.format === 'mesh')
+            {
+                var packet = new Packet('mesh',vertices,connectivity);
+                connection.sendUTF(JSON.stringify(packet));
+            }
+
+            //var object = JSON.parse(message.utf8Data);
+            //connection.sendUTF(object.utf8Data);
+
         }
 
         else if (message.type === 'binary') {
@@ -158,3 +189,4 @@ wsServer.on('request', function(request) {
     });
 });
 loadData();
+

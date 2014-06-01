@@ -65,10 +65,10 @@ v2 = new Vertex(1,1,0);
 v3= new Vertex(1,0,0);
 
 vertices = [];
-vertices.push(v0);
-vertices.push(v1);
-vertices.push(v2);
-vertices.push(v3);
+vertices.push([0,0,0]);
+vertices.push([0,1,0]);
+vertices.push([1,1,0]);
+vertices.push([1,0,0]);
 
 connectivity = [];
 t1 = [0,2,1];
